@@ -1,0 +1,37 @@
+{
+  "name": "swiss-army-watcher",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Swiss-Army Web Watcher — point it at any URL, API, feed, or on-chain address. Orbio Build Week 2026.",
+  "type": "module",
+  "packageManager": "pnpm@10.4.1",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "chat": "tsx src/examples/01-chat.ts",
+    "tools": "tsx src/examples/02-tools.ts",
+    "structured": "tsx src/examples/03-structured.ts",
+    "search": "tsx src/examples/04-web-search.ts",
+    "image": "tsx src/examples/05-image.ts",
+    "pdf": "tsx src/examples/06-pdf.ts",
+    "agent": "tsx src/examples/07-agent.ts",
+    "scan": "tsx src/agent.ts",
+    "watch": "tsx src/watch.ts",
+    "trending": "tsx src/trending.ts",
+    "dashboard": "tsx src/dashboard.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "dotenv": "^17.2.1",
+    "openai": "^5.20.0",
+    "zod": "^4.1.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.35.0",
+    "@types/node": "^24.3.1",
+    "eslint": "^9.35.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.43.0"
+  }
+}

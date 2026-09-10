@@ -1,0 +1,9 @@
+node_modules
+.env
+.env.local
+.env.*.local
+.last-scan.json
+.score-history.json
+.watcher-store.json
+out.png
+.DS_Store
