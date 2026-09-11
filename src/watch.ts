@@ -42,6 +42,8 @@ interface Change {
   pct_change: number | null
 }
 
+const MAX_CHANGES = 20
+
 function diffSnapshots(prev: Snapshot | null, current: FetchResult): Change[] {
   const changes: Change[] = []
 
@@ -82,11 +84,18 @@ function diffSnapshots(prev: Snapshot | null, current: FetchResult): Change[] {
 async function interpretChange(label: string, type: string, changes: Change[], ctx: string): Promise<string> {
   if (changes.length === 1 && changes[0].field === '_baseline') return `📌 Baseline captured.`
 
-  const desc = changes.map(c => {
+  const totalChanges = changes.filter(c => c.field !== '_baseline').length
+  const capped = changes.filter(c => c.field !== '_baseline')
+    .sort((a, b) => Math.abs(b.pct_change ?? 0) - Math.abs(a.pct_change ?? 0))
+    .slice(0, MAX_CHANGES)
+
+  const desc = capped.map(c => {
     if (c.field === 'content') return `Content changed`
     if (c.pct_change !== null) return `${c.field}: ${c.pct_change > 0 ? '+' : ''}${c.pct_change.toFixed(1)}%`
     return `${c.field}: ${c.old ?? '-'} → ${c.new ?? '-'}`
   }).join('; ')
+
+  const overflow = totalChanges > MAX_CHANGES ? ` (+${totalChanges - MAX_CHANGES} more changes omitted)` : ''
 
   try {
     const res = await openrouter.chat.completions.create({
@@ -186,21 +195,28 @@ async function scanTargets(store: WatcherStore): Promise<WatcherStore> {
     const changeType: Signal['change_type'] = changes.some(c => c.pct_change !== null && Math.abs(c.pct_change!) > 10) ? 'threshold_breach'
       : changes.some(c => c.field !== 'content') ? 'value_change' : 'content_change'
 
+    const sigChanges = changes.filter(c => c.field !== '_baseline')
+      .sort((a, b) => Math.abs(b.pct_change ?? 0) - Math.abs(a.pct_change ?? 0))
+    const summary = sigChanges.slice(0, 10).map(c =>
+      c.pct_change !== null ? `${c.field} ${c.pct_change > 0 ? '+' : ''}${c.pct_change.toFixed(1)}%` : `${c.field} changed`
+    ).join(', ')
+    const sigOverflow = sigChanges.length > 10 ? ` (+${sigChanges.length - 10} more)` : ''
+
     const { store: ns, signal } = addSignal(store, t.id, {
       timestamp: snapshot.timestamp,
       change_type: changeType,
-      summary: changes.filter(c => c.field !== '_baseline').map(c =>
-        c.pct_change !== null ? `${c.field} ${c.pct_change > 0 ? '+' : ''}${c.pct_change.toFixed(1)}%` : `${c.field} changed`
-      ).join(', '),
+      summary: summary + sigOverflow,
       interpretation,
-      details: Object.fromEntries(changes.filter(c => c.field !== '_baseline').map(c => [c.field, { old: c.old, new: c.new }])),
+      details: Object.fromEntries(sigChanges.slice(0, 15).map(c => [c.field, { old: c.old, new: c.new }])),
     })
     store = ns
 
     signal.delivered = true
-    const emoji = changeType === 'threshold_breach' ? '🚨' : changeType === 'value_change' ? '📊' : '📝'
-    const msg = [`${emoji} <b>${t.label}</b>`, interpretation, `<i>${signal.summary}</i>`].join('\n')
-    await sendTelegram({ text: msg })
+        const emoji = changeType === 'threshold_breach' ? '🚨' : changeType === 'value_change' ? '📊' : '📝'
+        // Cap Telegram message to 4000 chars (Telegram limit: 4096)
+        let msg = [`${emoji} <b>${t.label}</b>`, interpretation, `<i>${signal.summary.slice(0, 300)}</i>`].join('\n')
+        if (msg.length > 3800) msg = msg.slice(0, 3800) + '…'
+        await sendTelegram({ text: msg })
     console.log(`  ✅ → Telegram`)
   }
 

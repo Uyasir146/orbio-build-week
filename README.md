@@ -69,20 +69,93 @@ npm run watch -- --ask "what happened in the last 24 hours"
 ## 🏗 Architecture
 
 ```
+                      Swiss-Army Web Watcher
+══════════════════════════════════════════════════════════════
+
+  Target Layer                    Engine Layer                  Output Layer
+ ┌──────────────┐            ┌──────────────────┐           ┌──────────────┐
+ │  URL (HTML)  │──┐         │                  │           │  Telegram    │
+ │  API (JSON)  │  │  fetch  │  Smart Diff      │  signal   │  Delivery    │
+ │  RSS/Atom    │──┼────────→│  ┌────────────┐  │──────────→│  (formatted) │
+ │  On-Chain    │  │         │  │ Hash check  │  │           │              │
+ └──────────────┘  │         │  │ Value diff  │  │           └──────────────┘
+                   │         │  │ LLM interp  │  │
+                   │         │  └────────────┘  │           ┌──────────────┐
+                   │         └──────────────────┘           │  Dashboard   │
+                   │                  │                     │  :3456       │
+                   │         ┌───────┴───────┐             │  (live HTML) │
+                   │         │  Store        │             └──────────────┘
+                   │         │  ┌──────────┐ │
+                   │         │  │ History  │ │             ┌──────────────┐
+                   │         │  │ Signals  │ │             │  Cron Job    │
+                   └────────→│  │ Noise    │─┼────────────→│  every 30m   │
+                             │  │ Score    │ │             └──────────────┘
+                             │  └──────────┘ │
+                             └───────────────┘
+
+  One Orbio Key powers all LLM calls: interpret changes, answer
+  follow-up queries, detect patterns, generate market notes.
+```
+
+### Project Structure
+
+```
 src/
 ├── watch.ts               ★ Universal watcher engine
-├── agent.ts                 Legacy: crypto-first scan pipeline
 ├── dashboard.ts             Live web UI (localhost:3456)
 ├── trending.ts              DexScreener discovery engine
+├── agent.ts                 Crypto scoring pipeline (legacy + demo)
 ├── lib/
-│   ├── store.ts             Persistence, history, noise learning
-│   ├── targets.ts           Fetchers (URL/API/RSS/onchain)
-│   └── openrouter.ts        Orbio API client
+│   ├── store.ts             Persistence, noise learning, adaptive intervals
+│   ├── targets.ts           Fetchers (URL/API/RSS/onchain — multi-type)
+│   └── openrouter.ts        Orbio API client (api.orbio.so/api/v1)
 └── tools/
-    ├── dexscreener.ts       Live DEX market data
-    ├── onchain.ts           Blockscout explorer
-    ├── escalation.ts        Pattern detection
-    └── telegram.ts          Delivery
+    ├── dexscreener.ts       Live DEX market data (price, volume, liquidity)
+    ├── onchain.ts           Robinhood Chain blockscout explorer
+    ├── escalation.ts        Pattern detection (BREAKOUT/SURGE/BREAKDOWN)
+    └── telegram.ts          Formatted delivery to Telegram
+```
+
+---
+
+## 🚀 Quick Start
+
+```bash
+git clone https://github.com/Uyasir146/orbio-build-week
+cd orbio-build-week
+npm install --legacy-peer-deps
+cp .env.example .env.local
+# → Fill in OPENROUTER_API_KEY + TELEGRAM_BOT_TOKEN in .env.local
+
+# One command to start watching
+npm run watch -- --init && npm run watch
+
+# Add any target
+npm run watch -- --add url "https://example.com" "Label"
+npm run watch -- --add api "https://api.example.com/data" "API Monitor"
+npm run watch -- --add rss "https://example.com/feed.xml" "RSS Feed"
+npm run watch -- --add onchain "0x..." "Token"
+
+# Live dashboard
+npm run dashboard
+```
+
+---
+
+## 🎥 Demo
+
+```bash
+# Terminal 1: Run watcher (auto-discovers ORBIO + any targets)
+npm run watch -- --init && npm run watch
+
+# Terminal 2: Live dashboard
+npm run dashboard
+# → Open http://localhost:3456
+
+# Terminal 3: Ask questions
+npm run watch -- --since "Monday"
+npm run watch -- --status
+npm run watch -- --add url "https://..." "New Page"
 ```
 
 ---
