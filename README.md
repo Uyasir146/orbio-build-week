@@ -15,13 +15,41 @@ It diffs changes smartly, interprets them with the Orbio LLM, and delivers to Te
 git clone https://github.com/Uyasir146/orbio-build-week
 cd orbio-build-week
 npm install --legacy-peer-deps
-cp .env.example .env.local
-# → Fill in OPENROUTER_API_KEY + TELEGRAM_BOT_TOKEN
-
-npm run demo
+npm run demo:mock
 ```
 
-That's it. Seeds watchers, runs a full scan, prints a summary, and opens the live dashboard. Judges: clone → one command → everything works.
+**Zero API calls. Zero keys. Safe to run anywhere.**  
+[📸 View full demo screenshot →](assets/demo-screenshot.html)
+
+```
+$ npm run demo:mock
+
+🤖 Swiss-Army Web Watcher — Dry Run Demo
+
+━━━ WATCHERS (3) ━━━
+🟢 ORBIO Token (onchain)    — scans:3 signals:3 📡33%
+🟢 Orbio Build Page (url)    — scans:2 signals:1 📡50%
+🟢 CoinTelegraph RSS (rss)   — scans:2 signals:1 📡50%
+
+━━━ RECENT SIGNALS ━━━
+🚨 ORBIO surged 40.3% to $0.02864 — Build Week deadline nears
+📝 Builder count rose from 36 to 42 — interest accelerating
+📝 6 new CoinTelegraph articles with ORBIO coverage
+
+━━━ PATTERN DETECTION ━━━
+📈 BREAKOUT: ORBIO (-50.7% → +10.4% → +40.3%)
+   Signal: momentum accelerating
+
+━━━ AUTO-THREAD ━━━
+1/ 🤖 My monitoring agent runs on ONE Orbio key...
+2/ ORBIO surged +40.3% — 42 builders approved for Build Week
+3/ Smart diff + LLM interpretation = plain-language briefs
+4/ 3 watcher types: on-chain, URL, RSS — all autonomous
+5/ Zero credit burn. One key. One agent. One inbox.
+   github.com/Uyasir146/orbio-build-week
+```
+
+With live keys: `npm run demo` — same output, real API calls.
 
 ---
 

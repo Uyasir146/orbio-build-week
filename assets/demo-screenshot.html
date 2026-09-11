@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0d1117;
+    display: flex; justify-content: center; align-items: center;
+    min-height: 100vh; font-family: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', 'Consolas', monospace;
+  }
+  .terminal {
+    width: 820px; background: #0a0e14; border-radius: 10px;
+    border: 1px solid #30363d; overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,.6);
+  }
+  .titlebar {
+    background: #161b22; padding: 10px 16px; display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid #30363d;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot.red { background: #f85149; }
+  .dot.ylw { background: #d2991d; }
+  .dot.grn { background: #3fb950; }
+  .title { color: #8b949e; font-size: 12px; margin-left: 8px; }
+  .body { padding: 20px 24px; font-size: 13px; line-height: 1.7; color: #c9d1d9; }
+  .bold { font-weight: 700; }
+  .cyan { color: #58a6ff; }
+  .yellow { color: #d2991d; }
+  .green { color: #3fb950; }
+  .red { color: #f85149; }
+  .dim { color: #484f58; }
+  .prompt { color: #3fb950; }
+  .emoji { font-size: 14px; }
+  hr { border: none; border-top: 1px solid #21262d; margin: 14px 0; }
+  .separator { color: #30363d; margin: 0 8px; }
+</style>
+</head>
+<body>
+<div class="terminal">
+  <div class="titlebar">
+    <div class="dot red"></div><div class="dot ylw"></div><div class="dot grn"></div>
+    <div class="title">Terminal — npm run demo:mock</div>
+  </div>
+  <div class="body">
+    <div><span class="prompt">$</span> <span class="green">npm run demo:mock</span></div>
+    <div style="margin-top:10px"></div>
+    <div><span class="cyan bold">🤖 Swiss-Army Web Watcher — Dry Run Demo</span></div>
+    <div><span class="yellow">⚠  Mock mode: no API calls, no real keys needed</span></div>
+    <br>
+    <div class="bold">━━━ WATCHERS (3) ━━━</div>
+    <br>
+    <div><span class="green emoji">🟢</span> ORBIO Token <span class="dim">(onchain)</span></div>
+    <div><span class="dim">   scans:3 signals:3</span> <span class="yellow">📡33%</span> <span class="dim">unread:1</span></div>
+    <div><span class="green emoji">🟢</span> Orbio Build Page <span class="dim">(url)</span></div>
+    <div><span class="dim">   scans:2 signals:1</span> <span class="yellow">📡50%</span> <span class="dim">unread:1</span></div>
+    <div><span class="green emoji">🟢</span> CoinTelegraph RSS <span class="dim">(rss)</span></div>
+    <div><span class="dim">   scans:2 signals:1</span> <span class="yellow">📡50%</span> <span class="dim">unread:1</span></div>
+    <br>
+    <div class="bold">━━━ RECENT SIGNALS (4) ━━━</div>
+    <br>
+    <div><span class="red emoji">🚨</span> ORBIO Token — <span class="cyan">ORBIO surged 40.3% to $0.02864</span> as Build Week deadline nears — 36 builders competing for 8M prize pool driving demand.</div>
+    <div><span class="dim">   price +40.3%, vol $1.36M, liq $741K</span></div>
+    <br>
+    <div><span class="yellow emoji">📝</span> Orbio Build Page — <span class="cyan">Builder count rose from 36 to 42.</span> Interest accelerating ahead of deadline.</div>
+    <div><span class="dim">   Builder count: 36 → 42</span></div>
+    <br>
+    <div><span class="yellow emoji">📝</span> CoinTelegraph RSS — <span class="cyan">6 new articles including ORBIO coverage.</span> Build Week getting media attention.</div>
+    <div><span class="dim">   6 new articles, 31 total</span></div>
+    <br>
+    <div class="bold">━━━ PATTERN DETECTION ━━━</div>
+    <br>
+    <div><span class="red emoji">📈</span> <span class="green bold">BREAKOUT PATTERN DETECTED: ORBIO</span></div>
+    <div><span class="dim">   ORBIO dropped 50.7% → bounced +10.4% → surged +40.3%</span></div>
+    <div><span class="green">   Signal: momentum accelerating — price +40% in 1 day</span></div>
+    <br>
+    <div class="bold">━━━ AUTO-THREAD PREVIEW ━━━</div>
+    <br>
+    <div><span class="cyan">1/</span> 🤖 My monitoring agent runs on ONE Orbio key — no chat window, no manual refresh...</div>
+    <div><span class="cyan">2/</span> ORBIO surged +40.3% to $0.0286. 42 builders approved. Deadline Sept 13.</div>
+    <div><span class="cyan">3/</span> Smart diff + LLM interpretation = plain-language briefs, not raw JSON dumps.</div>
+    <div><span class="cyan">4/</span> 3 watcher types: on-chain, URL, RSS. All monitored autonomously.</div>
+    <div><span class="cyan">5/</span> Zero credit burn. One key. One agent. One inbox.</div>
+    <div style="margin-left:22px"><span class="dim">github.com/Uyasir146/orbio-build-week</span></div>
+    <br>
+    <hr>
+    <div><span class="green bold">━━━ DEMO COMPLETE ━━━</span></div>
+    <div><span class="dim">This is mock data — real agent produces identical output with live API calls.</span></div>
+    <div><span class="dim">Try it: </span><span class="cyan">npm run watch --init && npm run watch</span></div>
+    <br>
+    <div><span class="prompt">$</span> <span class="dim">█</span></div>
+  </div>
+</div>
+</body>
+</html>
