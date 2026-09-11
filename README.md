@@ -9,6 +9,22 @@ It diffs changes smartly, interprets them with the Orbio LLM, and delivers to Te
 
 ---
 
+## 🎬 One-Command Demo
+
+```bash
+git clone https://github.com/Uyasir146/orbio-build-week
+cd orbio-build-week
+npm install --legacy-peer-deps
+cp .env.example .env.local
+# → Fill in OPENROUTER_API_KEY + TELEGRAM_BOT_TOKEN
+
+npm run demo
+```
+
+That's it. Seeds watchers, runs a full scan, prints a summary, and opens the live dashboard. Judges: clone → one command → everything works.
+
+---
+
 ## 🎯 What It Does
 
 ```
@@ -30,39 +46,6 @@ It diffs changes smartly, interprets them with the Orbio LLM, and delivers to Te
 | 💬 **Follow-ups** | "What moved since Monday?" — summaries across all watchers |
 | 📊 **Live dashboard** | `npm run dashboard` — dark theme, auto-refresh |
 | 🚨 **Pattern alerts** | Threshold breaches get priority Telegram messages |
-
----
-
-## 🚀 Quick Start
-
-```bash
-git clone https://github.com/Uyasir146/orbio-build-week
-cd orbio-build-week
-npm install --legacy-peer-deps
-
-# Add your keys
-cp .env.example .env.local
-# Fill in OPENROUTER_API_KEY and TELEGRAM_BOT_TOKEN
-
-# Seed default watcher (ORBIO token)
-npm run watch -- --init
-
-# Add anything you want to watch
-npm run watch -- --add url "https://example.com" "My Page"
-npm run watch -- --add api "https://api.example.com/data" "API Monitor"
-npm run watch -- --add rss "https://blog.example.com/feed.xml" "Blog RSS"
-npm run watch -- --add onchain "0x..." "Token Name"
-
-# Scan all watchers manually
-npm run watch
-
-# Check status
-npm run watch -- --status
-
-# Ask: what changed?
-npm run watch -- --since "Monday"
-npm run watch -- --ask "what happened in the last 24 hours"
-```
 
 ---
 
@@ -102,9 +85,10 @@ npm run watch -- --ask "what happened in the last 24 hours"
 ```
 src/
 ├── watch.ts               ★ Universal watcher engine
+├── demo.ts                  One-command demo (npm run demo)
 ├── dashboard.ts             Live web UI (localhost:3456)
 ├── trending.ts              DexScreener discovery engine
-├── agent.ts                 Crypto scoring pipeline (legacy + demo)
+├── agent.ts                 Crypto scoring pipeline (demo use case)
 ├── lib/
 │   ├── store.ts             Persistence, noise learning, adaptive intervals
 │   ├── targets.ts           Fetchers (URL/API/RSS/onchain — multi-type)
@@ -142,7 +126,7 @@ npm run dashboard
 
 ---
 
-## 🎥 Demo
+## 🎥 Demo Workflow
 
 ```bash
 # Terminal 1: Run watcher (auto-discovers ORBIO + any targets)

@@ -18,6 +18,7 @@
     "watch": "tsx src/watch.ts",
     "trending": "tsx src/trending.ts",
     "dashboard": "tsx src/dashboard.ts",
+    "demo": "tsx src/demo.ts",
     "typecheck": "tsc --noEmit",
     "lint": "eslint ."
   },
