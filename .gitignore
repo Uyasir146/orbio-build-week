@@ -6,5 +6,6 @@ node_modules
 .score-history.json
 .watcher-store.json
 .trending.json
+.thread.md
 out.png
 .DS_Store
