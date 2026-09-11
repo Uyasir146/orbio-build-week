@@ -5,5 +5,6 @@ node_modules
 .last-scan.json
 .score-history.json
 .watcher-store.json
+.trending.json
 out.png
 .DS_Store
