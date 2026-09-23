@@ -25,7 +25,7 @@ import {
   loadStore, saveStore, addTarget, removeTarget, addSnapshot,
   getLastSnapshot, addSignal, getAllSignalsSince, getDueTargets,
   updateTarget,
-  type WatcherStore, type TargetConfig, type TargetType,
+  type WatcherStore, type TargetType,
   type Snapshot, type Signal,
 } from './lib/store.js'
 import { fetchTarget, type FetchResult } from './lib/targets.js'
@@ -102,12 +102,12 @@ async function interpretChange(label: string, type: string, changes: Change[], c
       model: DEFAULT_MODEL,
       messages: [
         { role: 'system', content: 'You are a monitoring analyst. Given a detected change, write 1-2 sentences: WHAT changed in plain language + WHY it might matter. No hedging. Return ONLY the interpretation.' },
-        { role: 'user', content: `${label} (${type})\nChanges: ${desc}\nPreview: ${ctx.slice(0, 800)}` },
+        { role: 'user', content: `${label} (${type})\nChanges: ${desc}${overflow}\nPreview: ${ctx.slice(0, 800)}` },
       ],
-      temperature: 0.3, max_tokens: 200,
-    } as any)
+      temperature: 0.3, max_completion_tokens: 200,
+    })
     return (res.choices[0]?.message?.content ?? desc).trim()
-  } catch { return desc }
+  } catch { return `${desc}${overflow}` }
 }
 
 // ═════════════════════════════════════════════════════════════════════
@@ -146,8 +146,8 @@ async function answerQuery(store: WatcherStore, query: string): Promise<string> 
         { role: 'system', content: `Summarize these changes since ${since.toLocaleDateString()}. Group by theme. Max 5 sentences.` },
         { role: 'user', content: list },
       ],
-      temperature: 0.3, max_tokens: 250,
-    } as any)
+      temperature: 0.3, max_completion_tokens: 250,
+    })
     const summary = res.choices[0]?.message?.content ?? list
     return `📋 <b>Changes since ${since.toLocaleDateString()}</b>\n(${signals.length} signals across ${new Set(signals.map(s => s.label)).size} watchers)\n\n${summary}`
   } catch { return list }

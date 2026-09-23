@@ -19,7 +19,7 @@ import { DEFAULT_MODEL, openrouter } from './lib/openrouter.js'
 import { sendTelegram } from './tools/telegram.js'
 import { getTokenInfo, chainStatus, type TokenInfo } from './tools/onchain.js'
 import { getMarketData, type MarketData } from './tools/dexscreener.js'
-import { scanEscalations, type EscalationAlert } from './tools/escalation.js'
+import { scanEscalations } from './tools/escalation.js'
 
 config({ path: ['.env.local', '.env'], quiet: true })
 
@@ -37,7 +37,13 @@ const Call = z.object({
   sources: z.array(z.string()).optional().describe('Any reference URLs.'),
 })
 
-const ScanResult = z.object({
+interface ScanResult {
+  scanned_at: string
+  watchlist: z.infer<typeof Call>[]
+  market_note: string
+}
+
+const ScanResultSchema: z.ZodType<ScanResult> = z.object({
   scanned_at: z.string(),
   watchlist: z.array(Call),
   market_note: z.string().describe('One-line macro: chain activity, sector flow.'),
@@ -68,7 +74,7 @@ function loadHistory(): ScoreHistory {
     if (existsSync('.score-history.json')) {
       return JSON.parse(readFileSync('.score-history.json', 'utf-8'))
     }
-  } catch {}
+  } catch { /* no history yet — start fresh */ }
   return {}
 }
 
@@ -141,7 +147,8 @@ async function scoreToken(inp: ScanInput, index: number): Promise<z.infer<typeof
       { role: 'user', content: lines.join('\n') },
     ],
     temperature: 0.2,
-  } as any)
+    max_completion_tokens: 600,
+  })
 
   let raw = (res.choices[0]?.message?.content ?? '').trim()
   raw = raw.replace(/^```(?:json)?\s*\n?/, '').replace(/\n?\s*```$/, '').trim()
@@ -149,14 +156,15 @@ async function scoreToken(inp: ScanInput, index: number): Promise<z.infer<typeof
   if (!raw) throw new Error(`Token ${index} — empty response`)
 
   try {
-    const json = JSON.parse(raw)
+    const json = JSON.parse(raw) as Record<string, unknown>
     // Normalize field names
+    const asStr = (v: unknown): string => typeof v === 'string' ? v : ''
     return Call.parse({
-      symbol: json.symbol || json.token || json.name || inp.topic.slice(0, 20),
+      symbol: asStr(json.symbol) || asStr(json.token) || asStr(json.name) || inp.topic.slice(0, 20),
       decision: json.decision,
-      confidence: typeof json.confidence === 'number' ? json.confidence : parseInt(json.confidence) || 50,
-      thesis: json.thesis || '',
-      key_levels: json.key_levels || undefined,
+      confidence: typeof json.confidence === 'number' ? json.confidence : parseInt(String(json.confidence)) || 50,
+      thesis: asStr(json.thesis),
+      key_levels: asStr(json.key_levels) || undefined,
       risks: Array.isArray(json.risks) ? json.risks.filter(Boolean) : [],
       sources: json.sources || undefined,
     })
@@ -170,7 +178,7 @@ async function scoreToken(inp: ScanInput, index: number): Promise<z.infer<typeof
  * Score all tokens in PARALLEL — each token gets its own LLM call.
  * Then run one final "market note" call for macro context.
  */
-async function analyzeTokens(inputs: ScanInput[]): Promise<z.infer<typeof ScanResult>> {
+async function analyzeTokens(inputs: ScanInput[]): Promise<ScanResult> {
   console.log(`[watcher] scoring ${inputs.length} tokens in parallel via Orbio LLM...`)
 
   const start = Date.now()
@@ -195,23 +203,23 @@ async function analyzeTokens(inputs: ScanInput[]): Promise<z.infer<typeof ScanRe
       { role: 'user', content: callsSummary },
     ],
     temperature: 0.3,
-    max_tokens: 200,
-  } as any)
+    max_completion_tokens: 200,
+  })
 
   const market_note = (marketRes.choices[0]?.message?.content ?? 'Robinhood Chain ecosystem active — monitor for breakout signals.').trim()
 
-  return {
+  return ScanResultSchema.parse({
     scanned_at: new Date().toISOString(),
     watchlist: calls,
     market_note,
-  }
+  })
 }
 
 // ═════════════════════════════════════════════════════════════════════
 // DELIVERY
 // ═════════════════════════════════════════════════════════════════════
 
-function formatTelegram(result: z.infer<typeof ScanResult>, history?: ScoreHistory): string {
+function formatTelegram(result: ScanResult, history?: ScoreHistory): string {
   const lines: string[] = [
     '🤖 <b>Robinhood Chain Watcher</b>',
     `<i>${result.market_note}</i>`,
@@ -263,7 +271,7 @@ async function main() {
 
   // Check chain
   let chainHealthy = false
-  try { chainHealthy = await chainStatus() } catch {}
+  try { chainHealthy = await chainStatus() } catch { /* chain optional */ }
   if (!chainHealthy) console.warn('[watcher] ⚠ Chain data unavailable — using LLM knowledge only')
 
   const inputs: ScanInput[] = []
@@ -345,7 +353,6 @@ async function main() {
         getMarketData(addr),
       ])
       // Fill symbol from blockscout if we have it
-      const symbol = info?.symbol || market ? 'Token' : addr.slice(0, 10)
       inputs.push({
         topic: info ? `${info.symbol} (${info.name})` : `Token at ${addr}`,
         onchain: info,

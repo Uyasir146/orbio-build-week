@@ -11,7 +11,7 @@
  *   npm run post -- --dry-run
  */
 
-import type { TargetConfig, TargetState, Signal, Snapshot, WatcherStore } from './lib/store.js'
+import type { WatcherStore } from './lib/store.js'
 
 // ═════════════════════════════════════════════════════════════════════
 // MOCK DATA
@@ -77,8 +77,8 @@ const MOCK_STORE: WatcherStore = {
         interval_s: 3600,
         current_interval_s: 3600,
         active: true,
-        createdAt: '2026-09-10T00:00:00Z',
-      } as any,
+        created_at: '2026-09-10T00:00:00Z',
+      },
       snapshots: [
         { timestamp: '2026-09-10T12:00:00Z', content_hash: 'rss001', content_preview: 'Bitcoin nears $80K...Orbio surges 160%...', values: { item_count: 25, newest_item_ts: Date.now() } },
         { timestamp: '2026-09-11T05:26:00Z', content_hash: 'rss002', content_preview: 'ORBIO Build Week update...Robinhood Chain activity...', values: { item_count: 31, newest_item_ts: Date.now() } },

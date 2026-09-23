@@ -90,7 +90,7 @@ export function loadStore(): WatcherStore {
     if (existsSync(STORE_PATH)) {
       return JSON.parse(readFileSync(STORE_PATH, 'utf-8'))
     }
-  } catch {}
+  } catch { /* store missing or corrupt — start empty */ }
   return { targets: {}, last_scan: null, total_signals_delivered: 0 }
 }
 

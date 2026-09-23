@@ -16,7 +16,7 @@ import { config } from 'dotenv'
 config({ path: ['.env.local', '.env'], quiet: true })
 
 import { createServer, IncomingMessage, ServerResponse } from 'http'
-import { readFileSync, existsSync, statSync } from 'fs'
+import { readFileSync, existsSync } from 'fs'
 import { join, extname } from 'path'
 
 const PORT = parseInt(process.env.DASHBOARD_PORT ?? '3456')

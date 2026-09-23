@@ -19,7 +19,7 @@
 import { config } from 'dotenv'
 config({ path: ['.env.local', '.env'], quiet: true })
 
-import { readFileSync, writeFileSync, existsSync } from 'fs'
+import { writeFileSync } from 'fs'
 import { DEFAULT_MODEL, openrouter } from './lib/openrouter.js'
 import { loadStore, getAllSignalsSince, getDueTargets } from './lib/store.js'
 import { sendTelegram } from './tools/telegram.js'
@@ -119,8 +119,8 @@ async function generateThread(ctx: ThreadContext, style: string): Promise<string
       { role: 'user', content: prompt },
     ],
     temperature: 0.7,
-    max_tokens: 800,
-  } as any)
+    max_completion_tokens: 800,
+  })
 
   return (res.choices[0]?.message?.content ?? 'Thread generation failed.').trim()
 }

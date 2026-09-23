@@ -249,7 +249,7 @@ async function fetchOnchain(target: TargetConfig): Promise<FetchResult> {
       if (bsData.holders !== undefined) values['holders'] = typeof bsData.holders === 'number' ? bsData.holders : null
       if (bsData.circulating_market_cap) values['mcap'] = parseFloat(String(bsData.circulating_market_cap)) || null
     }
-  } catch {}
+  } catch { /* blockscout optional — DexScreener data is enough */ }
 
   const { createHash } = await import('crypto')
   const content_hash = createHash('sha256').update(content).digest('hex').slice(0, 16)
