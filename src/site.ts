@@ -29,8 +29,9 @@ const HTML = `<!DOCTYPE html>
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; color:var(--fg); background:var(--bg); display:flex; min-height:100vh; }
   aside { width:228px; background:var(--side); color:#c9d1d9; flex-shrink:0; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; }
-  aside .brand { padding:20px; font-weight:700; font-size:1.05rem; color:#fff; border-bottom:1px solid #21262d; }
-  aside .brand span { color:var(--acc); }
+  aside .brand { padding:18px 20px; border-bottom:1px solid #21262d; display:flex; align-items:center; gap:10px; }
+  aside .brand img { width:30px; height:30px; border-radius:8px; }
+  aside .brand span { font-weight:700; font-size:1.05rem; color:#fff; }
   aside nav { padding:12px; display:flex; flex-direction:column; gap:2px; flex:1; }
   aside nav a { color:#8b949e; text-decoration:none; font-size:0.9rem; padding:9px 12px; border-radius:8px; }
   aside nav a:hover, aside nav a.active { background:#161b22; color:#fff; }
@@ -73,7 +74,7 @@ const HTML = `<!DOCTYPE html>
 <body>
 
 <aside>
-  <div class="brand"><span>●</span> swatch</div>
+  <div class="brand"><img src="/assets/brand/swatch-icon-dark-512.png" alt="swatch"><span>swatch</span></div>
   <nav>
     <a href="#overview" class="active">Overview</a>
     <a href="#chart">Chart</a>
