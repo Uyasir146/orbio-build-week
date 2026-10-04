@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 /**
- * SWATCH Site — dashboard app layout (sidebar + main panel).
+ * swatch Site — dashboard app layout (sidebar + main panel).
  *
  * Usage: npm run site  →  http://localhost:3457
  */
@@ -23,7 +23,7 @@ const HTML = `<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SWATCH — Dashboard</title>
+<title>swatch — Dashboard</title>
 <style>
   :root { --fg:#111; --muted:#6b7280; --line:#e5e7eb; --bg:#fff; --soft:#f6f7f9; --acc:#16a34a; --side:#0d1117; }
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -73,7 +73,7 @@ const HTML = `<!DOCTYPE html>
 <body>
 
 <aside>
-  <div class="brand"><span>●</span> SWATCH</div>
+  <div class="brand"><span>●</span> swatch</div>
   <nav>
     <a href="#overview" class="active">Overview</a>
     <a href="#chart">Chart</a>
@@ -82,7 +82,7 @@ const HTML = `<!DOCTYPE html>
     <a href="#demo">Demo</a>
     <a href="https://github.com/Uyasir146/orbio-build-week" target="_blank">Repo ↗</a>
   </nav>
-  <div class="foot">Swiss-Army Watcher<br>one key · one agent<br><a href="https://github.com/Uyasir146/orbio-build-week">GitHub</a> · Orbio</div>
+  <div class="foot">swiss-army watcher<br>one key · one agent<br><a href="https://github.com/Uyasir146/orbio-build-week">GitHub</a> · Orbio</div>
 </aside>
 
 <main>
@@ -128,7 +128,7 @@ $ npm run demo:mock</pre>
       <img class="demo-gif" src="/demo.gif" alt="Animated terminal demo">
       <div class="btns">
         <a class="btn primary" href="https://github.com/Uyasir146/orbio-build-week" target="_blank">View repo</a>
-        <a class="btn" href="https://www.orbio.so/launchpad/launch" target="_blank">$SWATCH on Launchpad</a>
+        <a class="btn" href="https://www.orbio.so/launchpad/launch" target="_blank">$swatch on Launchpad</a>
         <a class="btn" href="https://dexscreener.com/robinhood/${MAIN_PAIR}" target="_blank">DexScreener ↗</a>
       </div>
     </section>
@@ -194,6 +194,8 @@ const MIME: Record<string, string> = {
   '.png': 'image/png',
   '.gif': 'image/gif',
   '.json': 'application/json',
+  '.css': 'text/css',
+  '.js': 'application/javascript',
 }
 
 const server = createServer((req: IncomingMessage, res: ServerResponse) => {
@@ -225,6 +227,21 @@ const server = createServer((req: IncomingMessage, res: ServerResponse) => {
     }
   }
 
+  // Brand preview page — all logo variants
+  if (url === '/brand') {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' })
+    res.end(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>swatch brand</title>
+<style>body{font-family:sans-serif;background:#f6f7f9;padding:32px}h2{margin:24px 0 8px}
+.dark{background:#0d1117;padding:24px;border-radius:12px}.light{background:#fff;padding:24px;border-radius:12px;border:1px solid #e5e7eb}
+img{max-width:100%;height:auto}</style></head><body>
+<h2>Icon dark (launchpad)</h2><div class="dark"><img src="/assets/brand/swatch-icon-dark-512.png" style="width:256px"></div>
+<h2>Icon light</h2><div class="light"><img src="/assets/brand/swatch-icon-light-512.png" style="width:256px"></div>
+<h2>Lockup dark</h2><div class="dark"><img src="/assets/brand/swatch-logo-dark.png"></div>
+<h2>Lockup light</h2><div class="light"><img src="/assets/brand/swatch-logo-light.png"></div>
+</body></html>`)
+    return
+  }
+
   if (url === '/' || url === '/index.html') {
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' })
     res.end(HTML)
@@ -246,5 +263,5 @@ const server = createServer((req: IncomingMessage, res: ServerResponse) => {
 })
 
 server.listen(PORT, () => {
-  console.log(`\n🌐 SWATCH site → http://localhost:${PORT}\n`)
+  console.log(`\n🌐 swatch site → http://localhost:${PORT}\n`)
 })
