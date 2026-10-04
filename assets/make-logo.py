@@ -54,8 +54,8 @@ def lockup(mark_size, bg, fg_name, fg_sub, pad=48, gap=28):
     f_sub = ImageFont.truetype(sans, int(mark_size * 0.16))
     # measure
     tmp = ImageDraw.Draw(Image.new("RGB", (10, 10)))
-    w1 = tmp.textlength("SWATCH", font=f_main)
-    w2 = tmp.textlength("SWISS-ARMY WATCHER", font=f_sub)
+    w1 = tmp.textlength("swatch", font=f_main)
+    w2 = tmp.textlength("swiss-army watcher", font=f_sub)
     tw = int(max(w1, w2))
     W = pad * 2 + mark_size + gap + tw + 20
     H = mark_size + pad * 2
@@ -64,10 +64,10 @@ def lockup(mark_size, bg, fg_name, fg_sub, pad=48, gap=28):
     d = ImageDraw.Draw(img)
     tx = pad + mark_size + gap
     ty = pad + int(mark_size * 0.14)
-    d.text((tx, ty), "SWATCH", font=f_main, fill=fg_name)
+    d.text((tx, ty), "swatch", font=f_main, fill=fg_name)
     # green dot on the A? keep simple: underline accent bar
     d.rectangle([tx, ty + int(mark_size * 0.46), tx + int(mark_size * 0.5), ty + int(mark_size * 0.46) + 5], fill=ACC)
-    d.text((tx, ty + int(mark_size * 0.56)), "SWISS-ARMY WATCHER", font=f_sub, fill=fg_sub)
+    d.text((tx, ty + int(mark_size * 0.56)), "swiss-army watcher", font=f_sub, fill=fg_sub)
     return img
 
 # 1. icon dark (launchpad image, 512)
